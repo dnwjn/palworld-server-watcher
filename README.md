@@ -20,7 +20,7 @@ See the example [docker-compose.yml file][docker-compose] for an example configu
 |-------------------------|-------------------------------------------------------------------------|-------------------|
 | `CONTAINER_NAME`        | The name of the server container.                                       | `palworld-server` |
 | `GAME_PORT`             | The same value as `PORT` in the server container.                       | `8211`            |
-| `RCON_PORT`             | The same value as `RCON_PORT` in the server container.                  | `25575`           |
+| `QUERY_PORT`            | The same value as `QUERY_PORT` in the server container.                 | `27015`           |
 | `LOOP_SLEEP_SECONDS`    | How often to check the server status.                                   | `30`              |
 | `CONNECT_GRACE_SECONDS` | After starting the server, how long to wait before continuing the loop. | `60`              |
 
