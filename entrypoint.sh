@@ -6,6 +6,7 @@ SUCCESS="\033[0;32m"
 WARNING="\033[0;33m"
 
 running=false
+skip_sleep=false
 
 echo_line() {
     echo -e "$1"
@@ -55,10 +56,13 @@ check_for_start() {
     if [ $attempt -ge $max_attempts ]; then
         echo_warning "Server did not become healthy after ${max_attempts} attempts. Please check the server logs."
     else
-        running=true
         echo_success "Server is healthy."
+
         echo_line "Allowing users ${CONNECT_GRACE_SECONDS} seconds to connect..."
         sleep "${CONNECT_GRACE_SECONDS}"
+
+        running=true
+        skip_sleep=true
     fi
 }
 
@@ -74,6 +78,7 @@ check_for_stop() {
         docker stop "${CONTAINER_NAME}"
 
         running=false
+        skip_sleep=true
     fi
 }
 
@@ -81,13 +86,15 @@ run() {
     echo_success "***STARTING MONITOR***"
 
     start_tunnel
+
     echo_line "Waiting 5 seconds..."
     sleep 5
 
     if [ "$( docker container inspect -f '{{.State.Status}}' ${CONTAINER_NAME} )" = "running" ]; then
         echo_line "Server is already running."
         running=true
-        echo_line "Allowing users ${CONNECT_GRACE_SECONDS} seconds to connect..."        sleep "${CONNECT_GRACE_SECONDS}"
+        echo_line "Allowing users ${CONNECT_GRACE_SECONDS} seconds to connect..."
+        sleep "${CONNECT_GRACE_SECONDS}"
     else
         echo_line "Server is not running."
         running=false
@@ -100,8 +107,12 @@ run() {
             check_for_stop
         fi
 
-        echo_line "Sleeping for ${LOOP_SLEEP_SECONDS} seconds..."
-        sleep "${LOOP_SLEEP_SECONDS}"
+        if [ "$skip_sleep" = true ]; then
+            skip_sleep=false
+        else
+            echo_line "Sleeping for ${LOOP_SLEEP_SECONDS} seconds..."
+            sleep "${LOOP_SLEEP_SECONDS}"
+        fi
     done
 }
 
