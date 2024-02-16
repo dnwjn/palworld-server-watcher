@@ -12,7 +12,7 @@ RUN apk add --no-cache tcpdump docker openrc socat \
 # Set environment variables
 ENV CONTAINER_NAME=palworld-server \
     GAME_PORT=8211 \
-    RCON_PORT=25575 \
+    QUERY_PORT=27015 \
     LOOP_SLEEP_SECONDS=30 \
     CONNECT_GRACE_SECONDS=60
 

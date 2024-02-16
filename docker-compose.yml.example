@@ -4,20 +4,20 @@ services:
    server:
       image: thijsvanloef/palworld-server-docker:latest
       container_name: palworld-server
-      network_mode: service:watcher # This is important!
+      network_mode: service:watcher                   # This is important!
       # Continue with your own configuration
    
    watcher:
       image: dnwjn/palworld-server-watcher:latest
       container_name: palworld-watcher
       environment:
-         - CONTAINER_NAME=palworld-server # The name of the server container
-         - GAME_PORT=8211 # The same value as `PORT` in the server container
-         - RCON_PORT=25575 # The same value as `RCON_PORT` in the server container
-         - LOOP_SLEEP_SECONDS=30 # How often to check the server status
-         - CONNECT_GRACE_SECONDS=60 # After starting the server, how long to wait before continuing the loop
+         - CONTAINER_NAME=palworld-server             # The name of the server container
+         - GAME_PORT=8211                             # The same value as `PORT` in the server container
+         - QUERY_PORT=27015                           # The same value as `QUERY_PORT` in the server container
+         - LOOP_SLEEP_SECONDS=30                      # How often to check the server status
+         - CONNECT_GRACE_SECONDS=60                   # After starting the server, how long to wait before continuing the loop
       ports:
-        - 8211:8211/udp # The same value as `PORT` in the server container
-      #   - 27015:27015/udp # Enable to show up in the server list
+        - 8211:8211/udp                               # The same value as `GAME_PORT`
+      #   - 27015:27015/udp                           # Enable to show up in the server list
       volumes:
-         - /var/run/docker.sock:/var/run/docker.sock # This could be different depending on the operating system
+         - /var/run/docker.sock:/var/run/docker.sock  # This could be different depending on the operating system

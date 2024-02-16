@@ -24,12 +24,12 @@ echo_warning() {
 }
 
 start_tunnel() {
-    echo_line "Starting tunnel on port ${GAME_PORT} to ${CONTAINER_NAME}..."
+    echo_line "Started tunnel on game port ${GAME_PORT} to ${CONTAINER_NAME}."
     socat TCP4-LISTEN:$GAME_PORT,fork,reuseaddr TCP4:$CONTAINER_NAME:$GAME_PORT &
 
-    if [ -n "$RCON_PORT" ]; then
-        echo_line "Starting rcon tunnel on port ${RCON_PORT} to ${CONTAINER_NAME}..."
-        socat TCP4-LISTEN:$RCON_PORT,fork,reuseaddr TCP4:$CONTAINER_NAME:$RCON_PORT &
+    if [ -n "$QUERY_PORT" ]; then
+        echo_line "Started tunnel on query port ${QUERY_PORT} to ${CONTAINER_NAME}."
+        socat TCP4-LISTEN:$QUERY_PORT,fork,reuseaddr TCP4:$CONTAINER_NAME:$QUERY_PORT &
     fi
 }
 
@@ -39,7 +39,7 @@ check_for_start() {
     # Command to trigger locally: nc -vu localhost 8211
     tcpdump -n -c 1 -i any port $GAME_PORT 2> /dev/null
 
-    echo_line "Connection attempt detected on port ${GAME_PORT}."
+    echo_line "Connection attempt detected on game port $GAME_PORT."
     
     echo_info "***STARTING SERVER***"
     docker start "${CONTAINER_NAME}"
@@ -81,15 +81,13 @@ run() {
     echo_success "***STARTING MONITOR***"
 
     start_tunnel
-
     echo_line "Waiting 5 seconds..."
     sleep 5
 
     if [ "$( docker container inspect -f '{{.State.Status}}' ${CONTAINER_NAME} )" = "running" ]; then
         echo_line "Server is already running."
         running=true
-        echo_line "Allowing users ${CONNECT_GRACE_SECONDS} seconds to connect..."
-        sleep "${CONNECT_GRACE_SECONDS}"
+        echo_line "Allowing users ${CONNECT_GRACE_SECONDS} seconds to connect..."        sleep "${CONNECT_GRACE_SECONDS}"
     else
         echo_line "Server is not running."
         running=false
