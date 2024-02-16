@@ -43,7 +43,7 @@ check_for_start() {
     echo_line "Connection attempt detected on game port $GAME_PORT."
     
     echo_info "***STARTING SERVER***"
-    docker start "${CONTAINER_NAME}"
+    docker start "${CONTAINER_NAME}" > /dev/null
     
     max_attempts=10
     attempt=0
@@ -75,7 +75,7 @@ check_for_stop() {
         echo_line "No players found. Server will be shut down."
         echo_info "***STOPPING SERVER***"
 
-        docker stop "${CONTAINER_NAME}"
+        docker stop "${CONTAINER_NAME}" > /dev/null
 
         running=false
         skip_sleep=true
