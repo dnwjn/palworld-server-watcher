@@ -24,6 +24,20 @@ echo_warning() {
     echo -e "${WARNING}$1${NC}"
 }
 
+is_debug() {
+    if [ "$DEBUG" = true ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+echo_debug() {
+    if is_debug; then
+        echo_line "[DEBUG] $1"
+    fi
+}
+
 start_tunnel() {
     echo_line "Started tunnel on game port ${GAME_PORT} to ${CONTAINER_NAME}."
     socat TCP4-LISTEN:$GAME_PORT,fork,reuseaddr TCP4:$CONTAINER_NAME:$GAME_PORT &
@@ -40,7 +54,7 @@ check_for_start() {
     # Command to trigger locally: nc -vu localhost 8211
     tcpdump -n -c 1 -i any port $GAME_PORT 2> /dev/null
 
-    echo_line "Connection attempt detected on game port $GAME_PORT."
+    echo_debug "Connection attempt detected on game port $GAME_PORT."
     
     echo_info "***STARTING SERVER***"
     docker start "${CONTAINER_NAME}" > /dev/null
@@ -85,16 +99,19 @@ check_for_stop() {
 run() {
     echo_success "***STARTING MONITOR***"
 
+    echo_debug "Debug mode is enabled."
+
     start_tunnel
 
-    echo_line "Waiting 5 seconds..."
+    echo_debug "Waiting 5 seconds..."
+    
     sleep 5
 
     if [ "$( docker container inspect -f '{{.State.Status}}' ${CONTAINER_NAME} )" = "running" ]; then
         echo_line "Server is already running."
-        running=true
         echo_line "Allowing users ${CONNECT_GRACE_SECONDS} seconds to connect..."
         sleep "${CONNECT_GRACE_SECONDS}"
+        running=true
     else
         echo_line "Server is not running."
         running=false
@@ -110,7 +127,7 @@ run() {
         if [ "$skip_sleep" = true ]; then
             skip_sleep=false
         else
-            echo_line "Sleeping for ${LOOP_SLEEP_SECONDS} seconds..."
+            echo_debug "Sleeping for ${LOOP_SLEEP_SECONDS} seconds..."
             sleep "${LOOP_SLEEP_SECONDS}"
         fi
     done

@@ -14,7 +14,8 @@ ENV CONTAINER_NAME=palworld-server \
     GAME_PORT=8211 \
     QUERY_PORT=27015 \
     LOOP_SLEEP_SECONDS=30 \
-    CONNECT_GRACE_SECONDS=60
+    CONNECT_GRACE_SECONDS=60 \
+    DEBUG=false
 
 # Copy files
 COPY ./entrypoint.sh /entrypoint.sh
