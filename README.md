@@ -23,6 +23,7 @@ See the example [docker-compose.yml file][docker-compose] for an example configu
 | `QUERY_PORT`            | The same value as `QUERY_PORT` in the server container.                 | `27015`           |
 | `LOOP_SLEEP_SECONDS`    | How often to check the server status.                                   | `30`              |
 | `CONNECT_GRACE_SECONDS` | After starting the server, how long to wait before continuing the loop. | `60`              |
+| `DEBUG`                 | If debug mode should be enabled.                                        | `false`           |
 
 ### Notes
 
