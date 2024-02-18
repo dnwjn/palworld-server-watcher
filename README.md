@@ -24,6 +24,26 @@ See the example [docker-compose.yml file][docker-compose] for an example configu
 | `LOOP_SLEEP_SECONDS`    | How often to check the server status.                                   | `30`              |
 | `CONNECT_GRACE_SECONDS` | After starting the server, how long to wait before continuing the loop. | `60`              |
 
+### Notes
+
+#### `network_mode`
+
+You need to set the `network_mode` attribute in the configuration of the server:
+
+```
+network_mode: service:<watcher-service-name>
+```
+
+So if you follow the example it would be:
+
+```
+network_mode: service:watcher
+```
+
+#### `ports`
+
+You need to move the `ports` configuration to the watcher, as traffic will route via the watcher to the server.
+
 ## License
 
 The scripts and documentation in this project are released under the [MIT License][license].
