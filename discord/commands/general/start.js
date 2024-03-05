@@ -20,7 +20,7 @@ const onStopped = async (interaction) => {
     if (healthy) {
         await interaction.editReply('Server is up and running. Go say hi to your pals!');
     } else {
-        await interaction.editReply('Server did not get healthy, please check the logs.');                        
+        await interaction.editReply('Server did not get healthy, please check the logs.');
     }
 };
 
@@ -41,8 +41,8 @@ const onPause = async (interaction) => {
 
 module.exports = {
     data: new SlashCommandBuilder()
-		.setName('start')
-		.setDescription('Starts the server if it is inactive.'),
+        .setName('start')
+        .setDescription('Starts the server if it is inactive.'),
     async execute(interaction) {
         await interaction.deferReply();
 

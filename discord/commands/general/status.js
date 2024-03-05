@@ -3,8 +3,8 @@ const { dockerInspect } = require('../../util/docker.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-		.setName('status')
-		.setDescription('Retrieves the current status of the server.'),
+        .setName('status')
+        .setDescription('Retrieves the current status of the server.'),
     async execute(interaction) {
         await interaction.deferReply();
 

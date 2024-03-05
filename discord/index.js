@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const { Collection, Client, Events, GatewayIntentBits } = require('discord.js');
 const { deployCommands } = require('./util/commands');
 
-class Watcher {
+class Discord {
     constructor() {
         dotenv.config();
 
@@ -17,16 +17,16 @@ class Watcher {
 
     async init() {
         console.log('Starting Discord handler...');
-        
+
         await this.loadCommands();
         this.setEventListeners();
-        
+
         console.log('Discord handler ready!');
     }
-    
+
     async loadCommands() {
         await deployCommands();
-        
+
         this.client.commands = new Collection();
 
         const foldersPath = path.join(__dirname, 'commands');
@@ -35,11 +35,11 @@ class Watcher {
         for (const folder of commandFolders) {
             const commandsPath = path.join(foldersPath, folder);
             const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-            
+
             for (const file of commandFiles) {
                 const filePath = path.join(commandsPath, file);
                 const command = require(filePath);
-                
+
                 if ('data' in command && 'execute' in command) {
                     this.client.commands.set(command.data.name, command);
                 } else {
@@ -70,9 +70,12 @@ class Watcher {
             await command.execute(interaction);
         } catch (error) {
             console.error(error);
-            
+
             if (interaction.replied || interaction.deferred) {
-                await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+                await interaction.followUp({
+                    content: 'There was an error while executing this command!',
+                    ephemeral: true
+                });
             } else {
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
@@ -80,4 +83,4 @@ class Watcher {
     }
 }
 
-(new Watcher()).init();
+(new Discord()).init();

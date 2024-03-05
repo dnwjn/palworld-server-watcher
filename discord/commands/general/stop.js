@@ -19,8 +19,8 @@ const onRunning = async (interaction) => {
 
 module.exports = {
     data: new SlashCommandBuilder()
-		.setName('stop')
-		.setDescription('Stops the server if it is active.'),
+        .setName('stop')
+        .setDescription('Stops the server if it is active.'),
     async execute(interaction) {
         await interaction.deferReply();
 
