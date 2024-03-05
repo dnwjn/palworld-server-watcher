@@ -38,6 +38,22 @@ echo_debug() {
     fi
 }
 
+is_running() {
+    if [ "$( docker container inspect -f '{{.State.Status}}' ${CONTAINER_NAME} )" = "running" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+start_discord_handler() {
+    if [[ -z "$DISCORD_TOKEN" || -z "$DISCORD_CLIENT_ID" || -z "$DISCORD_GUILD_ID" ]]; then
+        echo_warning "Skipping Discord handler because of missing configuration."
+    else
+        node ./discord/index.js &
+    fi
+}
+
 start_tunnel() {
     echo_line "Started tunnel on game port ${GAME_PORT} to ${CONTAINER_NAME}."
     socat TCP4-LISTEN:$GAME_PORT,fork,reuseaddr TCP4:$CONTAINER_NAME:$GAME_PORT &
@@ -49,7 +65,7 @@ start_tunnel() {
 }
 
 check_for_start() {
-    echo_line "Listening for connection attempts on port ${GAME_PORT}..."
+    echo_debug "Listening for connection attempts on port ${GAME_PORT}..."
 
     # Command to trigger locally: nc -vu localhost 8211
     tcpdump -n -c 1 -i any port $GAME_PORT 2> /dev/null
@@ -81,16 +97,22 @@ check_for_start() {
 }
 
 check_for_stop() {
-    echo_line "Checking for players..."
+    echo_debug "Checking for players..."
 
-    players_output=$(docker exec -i "${CONTAINER_NAME}" rcon-cli ShowPlayers)
+    if is_running; then
+        players_output=$(docker exec -i "${CONTAINER_NAME}" rcon-cli ShowPlayers)
 
-    if [ "$players_output" = "name,playeruid,steamid" ]; then
-        echo_line "No players found. Server will be shut down."
-        echo_info "***STOPPING SERVER***"
+        if [ "$players_output" = "name,playeruid,steamid" ]; then
+            echo_line "No players found. Server will be shut down."
+            echo_info "***STOPPING SERVER***"
 
-        docker stop "${CONTAINER_NAME}" > /dev/null
+            docker stop "${CONTAINER_NAME}" > /dev/null
 
+            running=false
+            skip_sleep=true
+        fi
+    else
+        echo_line "Server has already been shut down."
         running=false
         skip_sleep=true
     fi
@@ -98,16 +120,15 @@ check_for_stop() {
 
 run() {
     echo_success "***STARTING MONITOR***"
-
     echo_debug "Debug mode is enabled."
 
+    start_discord_handler
     start_tunnel
 
     echo_debug "Waiting 5 seconds..."
-    
     sleep 5
 
-    if [ "$( docker container inspect -f '{{.State.Status}}' ${CONTAINER_NAME} )" = "running" ]; then
+    if is_running; then
         echo_line "Server is already running."
         echo_line "Allowing users ${CONNECT_GRACE_SECONDS} seconds to connect..."
         sleep "${CONNECT_GRACE_SECONDS}"

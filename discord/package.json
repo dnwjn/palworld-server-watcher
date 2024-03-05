@@ -1,0 +1,17 @@
+{
+    "name": "palworld-server-watcher",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon index.js",
+        "delete-commands": "node scripts/deleteCommands.js"
+    },
+    "dependencies": {
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.4.5"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.0"
+    }
+}
