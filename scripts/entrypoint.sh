@@ -5,6 +5,8 @@ INFO="\033[0;34m"
 SUCCESS="\033[0;32m"
 WARNING="\033[0;33m"
 
+TCPDUMP_TIMEOUT=30
+
 running=false
 skip_sleep=false
 
@@ -65,19 +67,32 @@ start_tunnel() {
 }
 
 check_for_start() {
-    echo_debug "Listening for connection attempts on port ${GAME_PORT}..."
+    if is_running; then
+        echo_debug "Server is already running."
+        running=true
+        skip_sleep=true
+        return
+    fi
+
+    echo_debug "Listening for connection attempts on port ${GAME_PORT} for ${TCPDUMP_TIMEOUT} seconds..."
 
     # Command to trigger locally: nc -vu localhost 8211
-    tcpdump -n -c 1 -i any port $GAME_PORT 2> /dev/null
+    tcpdump_output=$(timeout $TCPDUMP_TIMEOUT tcpdump -n -c 1 -i any port $GAME_PORT 2>&1)
 
-    echo_debug "Connection attempt detected on game port $GAME_PORT."
+    if echo "$tcpdump_output" | grep -q "0 packets captured"; then
+        echo_debug "No traffic logged for ${TCPDUMP_TIMEOUT} seconds."
+        skip_sleep=true
+        return
+    fi
+
+    echo_debug "Connection attempt detected on game port ${GAME_PORT}."
     
     echo_info "***STARTING SERVER***"
     docker start "${CONTAINER_NAME}" > /dev/null
     
     max_attempts=10
     attempt=0
-    until [ $attempt -ge $max_attempts ] || docker inspect --format='{{.State.Health.Status}}' "${CONTAINER_NAME}" 2>/dev/null | grep -q "healthy"; do
+    until [ $attempt -ge $max_attempts ] || docker inspect --format='{{.State.Health.Status}}' "${CONTAINER_NAME}" 2> /dev/null | grep -q "healthy"; do
         echo_line "Waiting for the server to be healthy..."
         sleep 5
         attempt=$(( attempt + 1 ))
@@ -112,7 +127,7 @@ check_for_stop() {
             skip_sleep=true
         fi
     else
-        echo_line "Server has already been shut down."
+        echo_debug "Server has already been shut down."
         running=false
         skip_sleep=true
     fi
