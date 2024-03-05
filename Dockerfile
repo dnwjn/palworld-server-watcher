@@ -33,9 +33,15 @@ ENV CONTAINER_NAME=palworld-server \
 # Set workdir
 WORKDIR /app
 
-# Set up Discord files
+# Copy Node files
+COPY ./package-lock.json package-lock.json
+COPY ./package.json package.json
+
+# Install Node dependencies
+RUN ["npm", "ci"]
+
+# Copy up Discord files
 COPY ./discord ./discord
-RUN ["npm", "ci", "--prefix", "./discord"]
 
 # Set up script to delete Discord commands
 COPY ./scripts/delete_all_discord_commands.sh /usr/local/bin/delete_all_discord_commands
