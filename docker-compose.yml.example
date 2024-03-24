@@ -16,6 +16,7 @@ services:
          - QUERY_PORT=27015                           # The same value as `QUERY_PORT` in the server container
          - LOOP_SLEEP_SECONDS=30                      # How often to check the server status
          - CONNECT_GRACE_SECONDS=60                   # After starting the server, how long to wait before continuing the loop
+         - SHUTDOWN_DELAY_SECONDS=300                 # How long to wait after the last player leaves to shutdown the server
       ports:
         - 8211:8211/udp                               # The same value as `GAME_PORT`
       #   - 27015:27015/udp                           # Enable to show up in the server list
