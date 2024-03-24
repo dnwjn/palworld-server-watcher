@@ -14,17 +14,18 @@ See the example [docker-compose.yml file][docker-compose] for an example configu
 
 ### Variables
 
-| Name                    | Description                                                             | Default           |
-|-------------------------|-------------------------------------------------------------------------|-------------------|
-| `CONTAINER_NAME`        | The name of the server container.                                       | `palworld-server` |
-| `GAME_PORT`             | The same value as `PORT` in the server container.                       | `8211`            |
-| `QUERY_PORT`            | The same value as `QUERY_PORT` in the server container.                 | `27015`           |
-| `LOOP_SLEEP_SECONDS`    | How often to check the server status.                                   | `30`              |
-| `CONNECT_GRACE_SECONDS` | After starting the server, how long to wait before continuing the loop. | `60`              |
-| `DISCORD_TOKEN`         | The token of your Discord bot.                                          |                   |
-| `DISCORD_CLIENT_ID`     | The client ID of your Discord bot.                                      |                   |
-| `DISCORD_GUILD_ID`      | The ID of your Discord server.                                          |                   |
-| `DEBUG`                 | If debug mode should be enabled.                                        | `false`           |
+| Name                     | Description                                                                                                                        | Default           |
+|--------------------------|------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `CONTAINER_NAME`         | The name of the server container.                                                                                                  | `palworld-server` |
+| `GAME_PORT`              | The same value as `PORT` in the server container.                                                                                  | `8211`            |
+| `QUERY_PORT`             | The same value as `QUERY_PORT` in the server container.                                                                            | `27015`           |
+| `LOOP_SLEEP_SECONDS`     | How often to check the server status.                                                                                              | `30`              |
+| `CONNECT_GRACE_SECONDS`  | After starting the server, how long to wait before continuing the loop.                                                            | `60`              |
+| `SHUTDOWN_DELAY_SECONDS` | How long to wait before shutting down the server after the last player leaves. The shutdown will be cancelled when a player joins. | `0` (immediately) |
+| `DISCORD_TOKEN`          | The token of your Discord bot.                                                                                                     |                   |
+| `DISCORD_CLIENT_ID`      | The client ID of your Discord bot.                                                                                                 |                   |
+| `DISCORD_GUILD_ID`       | The ID of your Discord server.                                                                                                     |                   |
+| `DEBUG`                  | If debug mode should be enabled.                                                                                                   | `false`           |
 
 ### Setup notes
 
