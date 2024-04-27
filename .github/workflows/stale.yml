@@ -1,0 +1,39 @@
+# This workflow warns and then closes issues and PRs that have had no activity for a specified amount of time.
+#
+# You can adjust the behavior by modifying this file.
+# For more information, see:
+# https://github.com/actions/stale
+name: Mark stale issues and pull requests
+
+on:
+  schedule:
+  - cron: '30 1 * * *'
+
+jobs:
+  stale:
+
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/stale@v5
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        days-before-stale: 14
+        only-labels: 'awaiting-author-update'
+        stale-issue-label: 'stale'
+        stale-pr-label: 'stale'
+        close-issue-label: 'stale-closed'
+        close-pr-label: 'stale-closed'
+        stale-issue-message: >
+          Hey there! 👋 It looks like there hasn't been any activity on this issue for the past 14 days. To keep the issue tracker organized and ensure that important topics aren't overlooked, I'm marking this issue as stale.
+          
+          If you still believe this is an active issue or have any updates to share, please feel free to comment below, and I'll be happy to revisit it. Otherwise, I'll close this issue after a grace period. Thanks for your understanding and for helping me keep this repository clean and efficient! 🚀
+        stale-pr-message: >
+          Hey there! 👋 It looks like there hasn't been any activity on this PR for the past 14 days. To keep the PR tracker organized and ensure that important topics aren't overlooked, I'm marking this PR as stale.
+          
+          If you're still behind this PR or have any updates to share, please feel free to comment below, and I'll be happy to revisit it. Otherwise, I'll close this PR after a grace period. Thanks for your understanding and for helping me keep this repository clean and efficient! 🚀
+        close-issue-message: 'This issue has been closed because of inactivity.'
+        close-pr-message: 'This PR has been closed because of inactivity.'
