@@ -1,3 +1,9 @@
+> [!IMPORTANT]
+> [thijsvanloef/palworld-server-docker][server] has implemented autopausing in v1.4.0. Because of that, this package is no longer required, and as such, I have archived this repository.
+>
+> 
+> Thanks to everyone for using it! :)
+
 # Palworld Server Watcher
 
 A watcher for your Palworld server ([thijsvanloef/palworld-server-docker][server]).
